@@ -9,12 +9,12 @@ for the `IResourceSerializeToJsonSummary` or `IResourceSerializeToJson` interfac
 
 For our use-case, we want to make sure to include the `creation_date` and
 some other data in the summary serialization of conversations and messages
-so we can get all the info we need for our application without doing full objet serialization.
+so we can get all the info we need for our application without doing full object serialization.
 
 
 # Defining a custom serialization
 
-Let's define these serializers in a in a file named `serialize.py`.
+Let's define these serializers in a file named `serialize.py`.
 
 ```python
 from guillotina import configure
@@ -53,7 +53,7 @@ class MessageJSONSummarySerializer(DefaultJSONSummarySerializer):
         return data
 ```
 
-And make sure to add the scan.
+And make sure to add the scan:
 
 ```python
 configure.scan('guillotina_chat.serialize')

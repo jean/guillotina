@@ -1,6 +1,6 @@
 # Static files
 
-To pull this all together, we'll create our web application that uses the api
+To pull this all together, we'll create our web application that uses the API
 to provide a very simple chat experience.
 
 Copy the following files into a new folder `static` in your application:

@@ -62,7 +62,7 @@ In order to use websockets, you need to request a websocket token first.
 
 ```
 GET /db/container/@wstoken
-Authentication Bearer <jwt token>
+Authentication: Bearer <jwt token>
 ```
 
 Then, use this token to generate a webservice URL(JavaScript example here):

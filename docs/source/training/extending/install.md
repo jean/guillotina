@@ -5,7 +5,7 @@ Guillotina differentiates `applications` from `addons`.
 An application is a python package you install into your environment and add to
 your list of applications in the configuration file.
 
-Addons on the otherhand are when you want to perform installation logic into
+Addons on the other hand are when you want to perform installation logic into
 a container.
 
 

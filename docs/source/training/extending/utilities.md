@@ -1,7 +1,7 @@
 # Async Utilities
 
-An async utility is a utility that run persistently on the asyncio event loop.
-It is useful for long running tasks.
+An async utility is a utility that runs persistently on the asyncio event loop.
+It is useful for long-running tasks.
 
 For our training, we're going to use an async utility with a queue to send
 messages to logged in users.
@@ -73,16 +73,16 @@ in the queue.
 
 For us, we will send messages to registered websockets.
 
-Make sure, like all other configured moduels, to ensure this file is scanned
+Make sure, like all other configured modules, to ensure this file is scanned
 by the packages `__init__.py` file.
 
 ## Sending messages
 
 We'll need to add another event subscriber to the `subscribers.py` file
 in order for the utility to know to send out new messages to registered
-web serveices. So your `utility.py` file will now look like:
+web services. So your `utility.py` file will now look like:
 
-```
+```python
 from guillotina import configure
 from guillotina.component import get_utility
 from guillotina.interfaces import IObjectAddedEvent, IPrincipalRoleManager

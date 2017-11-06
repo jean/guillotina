@@ -1,6 +1,6 @@
 # Event subscribers
 
-Events in Guillotina are heavily influenced from zope events with the caveat
+Events in Guillotina are heavily influenced by Zope events with the caveat
 in that we support async event handlers.
 
 For our chat application, we want to make sure every user that is part of a
@@ -8,7 +8,7 @@ conversation has permission to add new messages and view other messages.
 
 A simple way to do this is with an event handler that modifies permissions.
 
-A an `subscribers.py` file inside your application.
+Add a `subscribers.py` file inside your application.
 
 
 ```python

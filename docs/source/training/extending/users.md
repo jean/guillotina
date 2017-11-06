@@ -6,9 +6,9 @@ plugged in with other services.
 However, there is a simple provider that stores user data in the database
 called `guillotina_dbusers` that we will use for the purpose of our training.
 
-## Install guillotina_dbusers
+## Install `guillotina_dbusers`
 
-Just use pip
+Just use `pip`
 
 
 ```
