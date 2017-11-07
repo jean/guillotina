@@ -44,6 +44,7 @@ setup(
         'PyYAML',
         'aiotask_context'
     ],
+    dependency_links=['https://github.com/esnme/ultrajson/tarball/master#egg=ujson-2.0'],
     extras_require={
         'test': [
             'pytest',
