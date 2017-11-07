@@ -6,6 +6,7 @@ from guillotina import content
 
 class IToDo(interfaces.IItem):
     text = schema.Text()
+    completed = schema.Bool()
 
 @configure.contenttype(
         type_name="ToDo",
