@@ -199,7 +199,7 @@ class DefaultPOST(Service):
 
         # Update fields
         deserializer = query_multi_adapter((obj, self.request),
-                                         IResourceDeserializeFromJson)
+                                           IResourceDeserializeFromJson)
         if deserializer is None:
             return ErrorResponse(
                 'DeserializationError',
@@ -221,6 +221,7 @@ class DefaultPOST(Service):
         roleperm.assign_role_to_principal(
             'guillotina.Owner', await get_owner(obj, user))
 
+        data['id'] = obj.id
         await notify(ObjectAddedEvent(obj, self.context, obj.id, payload=data))
 
         absolute_url = query_multi_adapter((obj, self.request), IAbsoluteURL)
@@ -265,7 +266,7 @@ class DefaultPATCH(Service):
             self.context.add_behavior(behavior)
 
         deserializer = query_multi_adapter((self.context, self.request),
-                                         IResourceDeserializeFromJson)
+                                           IResourceDeserializeFromJson)
         if deserializer is None:
             return ErrorResponse(
                 'DeserializationError',
@@ -639,6 +640,7 @@ async def move(context, request):
     txn = get_transaction(request)
     cache_keys = txn._cache.get_cache_keys(context, 'deleted')
 
+    data['id'] = new_id
     await notify(
         BeforeObjectMovedEvent(context, original_parent, old_id, destination_ob,
                                new_id, payload=data))
@@ -747,6 +749,7 @@ async def duplicate(context, request):
             new_anno_data[key] = value
         await annotations_container.async_set(anno_id, new_anno_data)
 
+    data['id'] = new_id
     await notify(
         ObjectDuplicatedEvent(new_obj, context, destination_ob, new_id, payload=data))
 

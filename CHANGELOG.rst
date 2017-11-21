@@ -1,5 +1,133 @@
-2.0.0a1 (unreleased)
---------------------
+2.1.9 (unreleased)
+------------------
+
+- Nothing changed yet.
+
+
+2.1.8 (2017-11-21)
+------------------
+
+- Adding X-Forwarded-Proto in order to allow https rewrite of absolute url
+  [ramon] 
+
+- Adding PROPFIND HTTP Verb
+  [ramon]
+
+- Be able to provide a custom router using the `router` setting
+  [vangheem]
+
+
+2.1.7 (2017-11-15)
+------------------
+
+- Add `id` index
+  [vangheem]
+
+
+2.1.6 (2017-11-15)
+------------------
+
+- Make sure to abort all error responses
+  [vangheem]
+
+
+2.1.5 (2017-11-14)
+------------------
+
+- Track timing of various parts of request. Helps with providing metrics
+  [vangheem]
+
+
+2.1.4 (2017-11-14)
+------------------
+
+- Be able to provide request.uid value from request header `X-FORWARDED-REQUEST-UID`.
+  [vangheem]
+
+
+2.1.3 (2017-11-10)
+------------------
+
+- Implement copy_cloud_file on DBFile
+  [vangheem]
+
+
+2.1.2 (2017-11-08)
+------------------
+
+- Handle CancelledError on server close
+  [vangheem]
+
+
+2.1.1 (2017-11-08)
+------------------
+
+- Clean up async tasks better
+  [vangheem]
+
+
+2.1.0 (2017-11-07)
+------------------
+
+- Remove use of buildout for development/travis
+  [vangheem]
+
+- Upgrade to aiohttp > 2.3.0
+  [vangheem]
+
+- Fix iter_data method for DBFile(no uri attribute)
+  [vangheem]
+
+- Verify service method signatures when configuration is loaded
+  [vangheem]
+
+
+2.0.6 (2017-11-06)
+------------------
+
+- Use adapter lookup correctly for value serializer
+  [vangheem]
+
+
+2.0.5 (2017-11-06)
+------------------
+
+- Do not do async suscribers in a gather since we can lose get_current_request context
+  [vangheem]
+
+
+2.0.4 (2017-11-06)
+------------------
+
+- Fix MockTransaction implementation
+  [vangheem]
+
+
+2.0.3 (2017-11-06)
+------------------
+
+- Provide correct signature for default value converter
+  [vangheem]
+
+
+2.0.2 (2017-11-06)
+------------------
+
+- Handle missing component lookups more correctly for factories that return None
+  for the value.
+  [vangheem]
+
+
+2.0.1 (2017-11-06)
+------------------
+
+- DeserializationError and ValueDeserializationError should implement message
+  attribute
+  [vangheem]
+
+
+2.0.0 (2017-11-06)
+------------------
 
 - Make components more pythonic:
     - guillotina.component.getMultiAdapter -> get_multi_adapter

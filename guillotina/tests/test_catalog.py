@@ -59,38 +59,38 @@ async def test_get_data_uses_indexes_param(dummy_request):
     container.__name__ = 'guillotina'
     ob = await create_content('Item', id='foobar')
     data = await util.get_data(ob, indexes=['title'])
-    assert len(data) == 3  # uuid and type_name always returned
+    assert len(data) == 4  # uuid, type_name, id, etc always returned
 
     data = await util.get_data(ob)
-    assert len(data) > 7
+    assert len(data) > 8
 
 
 async def test_search_endpoint(container_requester):
-    async with await container_requester as requester:
+    async with container_requester as requester:
         response, status = await requester('GET', '/db/guillotina/@search')
         assert status == 200
 
 
 async def test_search_post_endpoint(container_requester):
-    async with await container_requester as requester:
+    async with container_requester as requester:
         response, status = await requester('POST', '/db/guillotina/@search', data='{}')
         assert status == 200
 
 
 async def test_reindex_endpoint(container_requester):
-    async with await container_requester as requester:
+    async with container_requester as requester:
         response, status = await requester('POST', '/db/guillotina/@catalog-reindex', data='{}')
         assert status == 200
 
 
 async def test_async_reindex_endpoint(container_requester):
-    async with await container_requester as requester:
+    async with container_requester as requester:
         response, status = await requester('POST', '/db/guillotina/@async-catalog-reindex', data='{}')
         assert status == 200
 
 
 async def test_create_catalog(container_requester):
-    async with await container_requester as requester:
+    async with container_requester as requester:
         response, status = await requester('POST', '/db/guillotina/@catalog', data='{}')
         assert status == 200
         response, status = await requester('DELETE', '/db/guillotina/@catalog')

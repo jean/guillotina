@@ -101,16 +101,19 @@ class GuillotinaAIOHTTPApplication(web.Application):
     def _make_request(self, message, payload, protocol, writer, task,
                       _cls=Request):
         return _cls(
-            message, payload, protocol, writer, protocol._time_service, task,
-            secure_proxy_ssl_header=self._secure_proxy_ssl_header,
+            message, payload, protocol, writer, task,
+            self._loop,
             client_max_size=self._client_max_size)
 
 
-def make_aiohttp_application(settings, middlewares=[]):
+def make_aiohttp_application():
+    middlewares = [resolve_dotted_name(m) for m in app_settings.get('middlewares', [])]
+    router_klass = app_settings.get('router', TraversalRouter)
+    router = resolve_dotted_name(router_klass)()
     return GuillotinaAIOHTTPApplication(
-        router=TraversalRouter(),
+        router=router,
         middlewares=middlewares,
-        **settings.get('aiohttp_settings', {}))
+        **app_settings.get('aiohttp_settings', {}))
 
 
 def list_or_dict_items(val):
@@ -161,19 +164,12 @@ def make_app(config_file=None, settings=None, loop=None, server_app=None):
     elif settings is None:
         raise Exception('Neither configuration or settings')
 
-    middlewares = [resolve_dotted_name(m) for m in settings.get('middlewares', [])]
-    # Initialize aiohttp app
-    if server_app is None:
-        server_app = make_aiohttp_application(settings, middlewares)
-
     # Create root Application
     root = ApplicationRoot(config_file)
-    root.app = server_app
-    server_app.root = root
     provide_utility(root, IApplication, 'root')
 
     # Initialize global (threadlocal) ZCA configuration
-    config = root.config = server_app.config = ConfigurationMachine()
+    config = root.config = ConfigurationMachine()
 
     import guillotina
     import guillotina.db.factory
@@ -221,6 +217,13 @@ def make_app(config_file=None, settings=None, loop=None, server_app=None):
 
     if 'logging' in app_settings:
         logging.config.dictConfig(app_settings['logging'])
+
+    # Make and initialize aiohttp app
+    if server_app is None:
+        server_app = make_aiohttp_application()
+    root.app = server_app
+    server_app.root = root
+    server_app.config = config
 
     content_type = ContentNegotiatorUtility(
         'content_type', app_settings['renderers'].keys())
@@ -274,11 +277,11 @@ def make_app(config_file=None, settings=None, loop=None, server_app=None):
     for utility in get_all_utilities_registered_for(IAsyncUtility):
         # In case there is Utilties that are registered
         if hasattr(utility, 'initialize'):
-            ident = asyncio.ensure_future(
+            task = asyncio.ensure_future(
                 lazy_apply(utility.initialize, app=server_app), loop=loop)
+            root.add_async_task(utility, task, {})
         else:
             logger.warn(f'No initialize method found on {utility} object')
-        root.add_async_task(utility, ident, {})
 
     server_app.on_cleanup.append(close_utilities)
 
@@ -294,9 +297,14 @@ def make_app(config_file=None, settings=None, loop=None, server_app=None):
 
 
 async def close_utilities(app):
+    root = get_utility(IApplication, name='root')
     for utility in get_all_utilities_registered_for(IAsyncUtility):
+        try:
+            root.cancel_async_utility(utility)
+        except KeyError:
+            pass
         if hasattr(utility, 'finalize'):
-            asyncio.ensure_future(lazy_apply(utility.finalize, app=app), loop=app.loop)
-    for db in app.router._root:
+            await lazy_apply(utility.finalize, app=app)
+    for db in root:
         if IDatabase.providedBy(db[1]):
             await db[1]._db.finalize()

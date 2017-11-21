@@ -1,4 +1,6 @@
 from guillotina import testing
+from guillotina.async import IAsyncUtility
+from guillotina.component import get_all_utilities_registered_for
 from guillotina.component import get_utility
 from guillotina.content import load_cached_schema
 from guillotina.db.storages.cockroach import CockroachStorage
@@ -129,13 +131,22 @@ class GuillotinaDBRequester(object):
                 return value, status, resp.headers
 
 
+def close_async_tasks():
+    root = get_utility(IApplication, name='root')
+    for utility in get_all_utilities_registered_for(IAsyncUtility):
+        try:
+            root.cancel_async_utility(utility)
+        except KeyError:
+            pass
+
 @pytest.fixture(scope='function')
 def dummy_guillotina(loop):
     from guillotina import test_package  # noqa
     aioapp = make_app(settings=get_dummy_settings(), loop=loop)
     aioapp.config.execute_actions()
     load_cached_schema()
-    return aioapp
+    yield aioapp
+    close_async_tasks()
 
 
 class DummyRequestAsyncContextManager(object):
@@ -195,6 +206,7 @@ def guillotina_main(loop):
     aioapp.config.execute_actions()
     load_cached_schema()
     yield aioapp
+    close_async_tasks()
 
 
 @pytest.fixture(scope='function')
